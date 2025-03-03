@@ -8,6 +8,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -70,29 +71,96 @@ public class TrangChuController {
         return new RedirectView("/trangchu");
     }
     
-
     @GetMapping("/trangchu")
-private String getViewTrangChu(Model model, HttpSession session) {
-    // Lấy mã người dùng từ phiên làm việc
+    private String getViewTrangChu(Model model, HttpSession session) {
     Long mand = (Long) session.getAttribute("mand");
-
-    // Nếu người dùng đã đăng nhập (có mã người dùng)
+    
     if (mand != null) {
         List<ThongBao> thongBaos = thongBaoService.getThongBaosByUserId(mand);
         model.addAttribute("thongBaos", thongBaos);
         
-        // Lấy thông tin người dùng và thêm vào mô hình
         NguoiDung nguoiDung = nguoiDungService.getNguoiDungBy(mand);
         model.addAttribute("nguoiDung", nguoiDung);
     }
+    
+    List<DoiTac> allDoiTacs = doiTacService.getAllDoitac();
+    List<DoiTac> topDoiTacs = allDoiTacs.stream()
+        .sorted((dt1, dt2) -> {
+            int size1 = donDatBanService.countByDoiTacId(dt1.getMadt());
+            int size2 = donDatBanService.countByDoiTacId(dt2.getMadt());
+            return Integer.compare(size2, size1);
+        })
+        .limit(5)
+        .collect(Collectors.toList());
 
+    model.addAttribute("topDoiTacs", topDoiTacs);
     model.addAttribute("loainhahangs", loaiNhaHangService.getAllLoaiNhaHang());
-    model.addAttribute("doiTacs", doiTacService.getAllDoitac());
-
-    // Nếu người dùng chưa đăng nhập, không thêm thông tin người dùng vào mô hình
+    model.addAttribute("doiTacs", allDoiTacs);
+    
     return "trangchu/index";
 }
 
+// tìm kiếm
+@GetMapping("/search")
+public String search(@RequestParam(name = "query", required = false) String query, Model model) {
+    List<DoiTac> results;
+    if (query != null && !query.isEmpty()) {
+        results = doiTacService.searchByName(query);
+        results.addAll(doiTacService.searchByFullAddress(query));
+    } else {
+        results = doiTacService.getAllDoitac();
+    }
+    List<DoiTac> allDoiTacs = doiTacService.getAllDoitac();
+    List<DoiTac> topDoiTacs = allDoiTacs.stream()
+        .sorted((dt1, dt2) -> {
+            int size1 = donDatBanService.countByDoiTacId(dt1.getMadt());
+            int size2 = donDatBanService.countByDoiTacId(dt2.getMadt());
+            return Integer.compare(size2, size1);
+        })
+        .limit(5)
+        .collect(Collectors.toList());
+
+    model.addAttribute("topDoiTacs", topDoiTacs);
+    model.addAttribute("loainhahangs", loaiNhaHangService.getAllLoaiNhaHang());
+    model.addAttribute("doiTacs", results);
+    return "trangchu/index";
+}
+
+// lọc
+@GetMapping("/loc")
+public String loc(
+        @RequestParam(value = "thanhpho", required = false) String thanhpho,
+        @RequestParam(value = "hoadon", required = false) String hoadon,
+        Model model) {
+
+    // Thực hiện lọc dữ liệu
+    List<DoiTac> doiTacs = doiTacService.locTheoTieuChi(thanhpho, hoadon);
+    
+    model.addAttribute("doiTacs", doiTacs);
+    
+    return "trangchu/index"; 
+}
+
+@GetMapping("/loc-theo-loai/{malnh}")
+public String locTheoLoai(@PathVariable("malnh") Long loaiNhaHangId, Model model, HttpSession session) {
+    Long mand = (Long) session.getAttribute("mand");
+    
+    // Nếu người dùng đã đăng nhập (có mã người dùng)
+    if (mand != null) {
+        List<ThongBao> thongBaos = thongBaoService.getThongBaosByUserId(mand);
+        model.addAttribute("thongBaos", thongBaos);
+    }
+
+    // Lấy danh sách đối tác theo mã loại nhà hàng
+    List<DoiTac> doiTacs = doiTacService.findByLoaiNhaHang(loaiNhaHangId);
+    model.addAttribute("doiTacs", doiTacs);
+
+    // Lấy tất cả các loại nhà hàng
+    List<LoaiNhaHang> loaiNhaHangs = loaiNhaHangService.getAllLoaiNhaHang();
+    model.addAttribute("loainhahangs", loaiNhaHangs);
+
+    return "trangchu/index"; 
+}
 
     @GetMapping("/ctnhahang/{id}")
     private String getViewCTNhaHang(@PathVariable("id") Long id, Model model)
@@ -430,56 +498,7 @@ private String getViewTrangChu(Model model, HttpSession session) {
         
         return "trangchu/combo";
     }
-    
-    // tìm kiếm
-    @GetMapping("/search")
-    public String search(@RequestParam(name = "query", required = false) String query, Model model) {
-        List<DoiTac> results;
-        if (query != null && !query.isEmpty()) {
-            results = doiTacService.searchByName(query);
-            results.addAll(doiTacService.searchByFullAddress(query));
-        } else {
-            results = doiTacService.getAllDoitac();
-        }
-        model.addAttribute("doiTacs", results);
-        return "trangchu/index";
-    }
 
-    //lọcs
-    @GetMapping("/loc")
-    public String loc(
-            @RequestParam(value = "thanhpho", required = false) String thanhpho,
-            @RequestParam(value = "hoadon", required = false) String hoadon,
-            Model model) {
-
-        // Thực hiện lọc dữ liệu
-        List<DoiTac> doiTacs = doiTacService.locTheoTieuChi(thanhpho, hoadon);
-        
-        model.addAttribute("doiTacs", doiTacs);
-        
-        return "trangchu/index"; 
-    }
-    
-    @GetMapping("/loc-theo-loai/{malnh}")
-    public String locTheoLoai(@PathVariable("malnh") Long loaiNhaHangId, Model model, HttpSession session) {
-        Long mand = (Long) session.getAttribute("mand");
-        
-        // Nếu người dùng đã đăng nhập (có mã người dùng)
-        if (mand != null) {
-            List<ThongBao> thongBaos = thongBaoService.getThongBaosByUserId(mand);
-            model.addAttribute("thongBaos", thongBaos);
-        }
-
-        // Lấy danh sách đối tác theo mã loại nhà hàng
-        List<DoiTac> doiTacs = doiTacService.findByLoaiNhaHang(loaiNhaHangId);
-        model.addAttribute("doiTacs", doiTacs);
-
-        // Lấy tất cả các loại nhà hàng
-        List<LoaiNhaHang> loaiNhaHangs = loaiNhaHangService.getAllLoaiNhaHang();
-        model.addAttribute("loainhahangs", loaiNhaHangs);
-
-        return "trangchu/index"; 
-    }
     //đổi mật khẩu
     @PostMapping("/change-password")
     public String changePassword(@RequestParam("oldPassword") String oldPassword,

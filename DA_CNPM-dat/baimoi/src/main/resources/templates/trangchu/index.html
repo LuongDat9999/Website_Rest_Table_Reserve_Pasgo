@@ -9,7 +9,6 @@
         <script th:src="@{/js/nav.js}"></script>
         <script th:src="@{https://example.com/fontawesome/vVERSION/js/all.js}"></script>
         <link rel="icon" th:href="@{/images/iconweb.png}" type="image/x-icon">
-
         <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css}"/>
         <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js}"></script>
         <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
@@ -25,40 +24,87 @@
         <!-- BODY Content  -->
         <div class="fixcontent">
             <div class="content" >
-                <form class="search-box" action="/search" method="get">
-                    <input type="text" name="query" placeholder="Nhập tên nhà hàng hoặc địa chỉ">
-                    <button  type="submit">
-                       Tìm kiếm
-                    </button> 
-                </form>
-                <!-- Form lọc -->
-                <form id="filterForm" method="get" action="/loc">
-                    <label for="thanhpho">Thành phố:</label>
-                    <select id="thanhpho" name="thanhpho" style="margin-right: 10px;">
-                        <option value="">Chọn thành phố</option>
-                        <option value="TP. Hà Nội">Hà Nội</option>
-                        <option value="TP. Hồ Chí Minh">Hồ Chí Minh</option>
-                        <option value="TP. Đà Nẵng">Đà Nẵng</option>
-                        <!-- Thêm các thành phố khác nếu cần -->
-                    </select>
-
-                    <label for="hoadon">Hóa đơn trung bình:</label>
-                    <select id="hoadon" name="hoadon" style="margin-right: 10px;">
-                        <option value="">Chọn hóa đơn trung bình</option>
-                        <option value="100K - 200K">100K - 200K</option>
-                        <option value="200K - 300K">200K - 300K</option>
-                        <option value="300K - 400K">300K - 400K</option>
-                        <option value="400K - 500K">400K - 500K</option>
-                        <option value="500K - 600K">500K - 600K</option>
-                        <!-- Thêm các giá trị khác nếu cần -->
-                    </select>
-
-                    <button type="submit">Lọc</button>
-                </form>
+                <form class="fm-search" action="/search" method="get" id="search-form" onsubmit="saveKeyword();">
+                    <div class="search-box">
+                        <input type="text" name="query" id="query-input" placeholder="Nhập tên nhà hàng hoặc địa chỉ" onclick="openPropose()" oninput="wordSuggess()">
+                        <button class="btn-search" type="submit">
+                            <span>Tìm kiếm</span>
+                        </button>
+                    </div>
                 
+                    <div id="propose-box" class="fm-propose">
+                        <div class="ite-propose keyword_searched">
+                            <h3>Gợi ý</h3>
+                            <ul id="myMenu">
+                                <li th:each="doiTac : ${topDoiTacs}">
+                                    <a style="color: #555; text-decoration: none;" th:text="${doiTac.tennhahang}" th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}"></a>
+                                </li>
+                            </ul>
+                        </div>                        
+
+                        <div class="ite-propose keyword_searched">
+                            <h3>
+                            <img src="/images/ictime.png" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;">
+                            Từ khóa gần đây
+                            </h3>
+                            <ul id="recent-keywords-list">
+                            <!-- Các từ khóa sẽ được hiển thị ở đây -->
+                            </ul>
+                        </div>
+                        
+                        <div class="ite-propose res-outstanding">
+                            <h3>
+                                <img src="/images/fire.png" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 5px;">
+                                Nhà hàng nổi trội
+                            </h3>
+                            <div class="list-res-outstand">
+                                <div th:each="doiTac : ${topDoiTacs}">
+                                    <a class="item-res-outstand" th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
+                                        <img th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}" />
+                                        <div class="fm-content-res">
+                                            <h4 th:text="${doiTac.tennhahang}"></h4>
+                                            <p th:text="${doiTac.getFullAddress()}"></p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>                        
+                        
+                    </div>
+                    <div id="brg-propose-box" class="brg-propose-box" onclick="closePropose()"></div>
+                </form>                                    
+                <!-- Form lọc -->
+                <div class="fm-filter">
+                    <form id="filterForm" method="get" action="/loc">
+                        <div>
+                            <label for="thanhpho">Thành phố:</label>
+                            <select class="cus-select" id="thanhpho" name="thanhpho" style="margin-right: 10px;">
+                                <option value="">Chọn thành phố</option>
+                                <option value="TP. Hà Nội">Hà Nội</option>
+                                <option value="TP. Hồ Chí Minh">Hồ Chí Minh</option>
+                                <option value="TP. Đà Nẵng">Đà Nẵng</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="hoadon">Hóa đơn trung bình:</label>
+                            <select class="cus-select" id="hoadon" name="hoadon" style="margin-right: 10px;">
+                                <option value="">Chọn hóa đơn trung bình</option>
+                                <option value="100K - 200K">100K - 200K</option>
+                                <option value="200K - 300K">200K - 300K</option>
+                                <option value="300K - 400K">300K - 400K</option>
+                                <option value="400K - 500K">400K - 500K</option>
+                                <option value="500K - 600K">500K - 600K</option>
+                            </select>
+                        </div>
+                        <button class="cus-select" type="submit">
+                            <img src="/images/icfilter.png" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 5px;">
+                            Lọc
+                        </button>
+                    </form>
+                </div>
 
                 <!---------  Loại Nhà Hàng  --------->
-                <div class="menu-container">
+                <div class="menu-container scroll-list" >
                     <div class="menu" th:each="loainhahang : ${loainhahangs}" th:if="${loainhahang != null}">
                         <a th:href="@{/loc-theo-loai/{malnh}(malnh=${loainhahang.malnh})}">
                             <div  class="menu-item">
@@ -72,7 +118,7 @@
                 <!--CHOICE-->
 
                 <!--Box1-->
-               <!-- Kiểm tra điều kiện và hiển thị tiêu đề nếu thỏa mãn -->
+            <!-- Kiểm tra điều kiện và hiển thị tiêu đề nếu thỏa mãn -->
                 <div >
                     <div >
                         <h2>Buffet hải sản</h2>
@@ -80,9 +126,9 @@
                     </div>
                 </div>
                 
-                <div class="pagebox">
+                <div class="pagebox cards">
                     <!-- Lặp qua danh sách doiTacs để hiển thị từng đối tác thỏa mãn điều kiện -->
-                    <div th:each="doiTac : ${doiTacs}">
+                    <div class="div-card" th:each="doiTac : ${doiTacs}">
                         <div th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 1 && doiTac.mabv != null}">
                             <div class="box1">
                                 <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
@@ -91,7 +137,7 @@
                                     </div>
                                     <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
                                     <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
-                                    <div style="padding: 0px 90px;">
+                                    <div style="width: 100%;display: flex; justify-content: center;">
                                         <button type="button" class="fm-btn">Đặt bàn</button>
                                     </div>
                                 </a>
@@ -100,7 +146,7 @@
                     </div>
                 </div>
                 
-                 <!-- Box2  -->
+                <!-- Box2  -->
                 <div >
                     <div >
                         <h2>Nhà Hàng da đạng giá. Ưu đãi bất ngờ!</h2>
@@ -108,16 +154,15 @@
                     </div>
                 </div>
                 
-                <div class="pagebox">
-                    <div class="box1" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 2 && doiTac.mabv != null }" >
+                <div class="pagebox cards">
+                    <div class="box1 div-card" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 2 && doiTac.mabv != null }" >
                         <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
                             <div class="box2">
                                 <img class="fix-img" th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}"/>
                             </div>
-                            
                             <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
                             <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
-                            <div style="padding: 0px 90px;">
+                            <div style="width: 100%;display: flex; justify-content: center;">
                                 <button type="button" class="fm-btn">Đặt bàn</button>
                             </div>
                         </a>
@@ -132,15 +177,15 @@
                     </div> 
                 </div>
                 
-                <div class="pagebox">
-                    <div class="box1" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 3 && doiTac.mabv != null }" >
+                <div class="pagebox cards">
+                    <div class="box1 div-card" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 3 && doiTac.mabv != null }" >
                         <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
                             <div class="box2">
                                 <img class="fix-img" th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}"/>
                             </div>
                             <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
                             <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
-                            <div style="padding: 0px 90px;">
+                            <div style="width: 100%;display: flex; justify-content: center;">
                                 <button type="button" class="fm-btn">Đặt bàn</button>
                             </div>
                         </a>
@@ -154,8 +199,8 @@
                     </div>
                 </div>
                 
-                <div class="pagebox">
-                    <div class="box1" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 4 && doiTac.mabv != null }" >
+                <div class="pagebox cards">
+                    <div class="box1 div-card" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 4 && doiTac.mabv != null }" >
                         <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
                             <div class="box2">
                                 <img class="fix-img" th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}"/>
@@ -163,7 +208,7 @@
                             
                             <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
                             <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
-                            <div style="padding: 0px 90px;">
+                            <div style="width: 100%;display: flex; justify-content: center;">
                                 <button type="button" class="fm-btn">Đặt bàn</button>
                             </div>
                         </a>
@@ -190,6 +235,6 @@
                     </div>
                 </div>
             </div>
-        </div>           
+        </div>        
     </body>
 </html>

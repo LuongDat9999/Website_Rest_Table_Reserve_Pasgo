@@ -65,7 +65,8 @@
                             <table>
                             <tr>
                                 <th>Mã DDB</th>
-                                <th>Mã Người Dùng</th>
+                                <th>Tên Người Dùng</th>
+                                <th>Số điện thoại</th>
                                 <th>Ngày đặt</th>
                                 <th>Giờ đến</th>
                                 <th>Số lượng</th>
@@ -78,6 +79,7 @@
                             <tr th:if="${donDatBan.trangThaiDon.mattd == 2}" th:each="donDatBan : ${donDatBans}">
                                 <td th:text="${donDatBan.maddb}"></td>
                                 <td th:text="${donDatBan.nguoiDung.hoten}"></td>
+                                <td th:text="${donDatBan.nguoiDung.sdt}"></td>
                                 <td th:text="${#dates.format(donDatBan.ngaydat, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${#dates.format(donDatBan.thoigiandat, 'HH:mm')}"></td>
                                 <td th:text="${donDatBan.solgnguoi}"></td>

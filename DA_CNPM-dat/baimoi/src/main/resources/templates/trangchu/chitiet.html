@@ -105,7 +105,7 @@
                 <div class="detail-box" >
                     <h2 th:text="${doiTac.tennhahang}"></h2>
                     <div style="margin-left: 10px; color: #888">
-                        <p th:text="${doiTac.getFullAddress()}"></p>
+                        <p th:text="'Địa chỉ: ' + ${doiTac.getFullAddress()}" style="color: #d02028;"></p>
                         <p><span>Loại nhà Hàng:</span>
                             <ul>
                                 <li style="font-size: 20px;" class="category" th:each="loainhahang : ${doiTac.loaiNhaHangs}"  th:text="${loainhahang.tenlnh}"></li>
@@ -114,7 +114,7 @@
                         <p  th:text="'Khoảng giá: ' + ${doiTac.hoadontb} + ' / người'"><span>200.000 - 500.000 đ/người</span></p>
                         <p style="color: rgb(14, 202, 86);" th:text="'Mở cửa: ' + ${doiTac.giomo}"></p>
                         <p  style="color: red;" th:text="'Đóng cửa: ' + ${doiTac.giodong}"></p>
-                        <a th:href="${doiTac.linklienket}" th:text="'Facebook: '+${doiTac.linklienket}" target="_blank"></a>
+                        <a th:href="${doiTac.linklienket}" th:text="'Liên kết: '+${doiTac.linklienket}" target="_blank"></a>
                     </div>
                     <div class="datban">
                         <a class="fm-btndatban" th:if="${session.loggedInUser != null}" th:href="@{/datban/{id}(id=${doiTac.madt})}">Đặt Bàn</a>
@@ -146,7 +146,7 @@
                                     <p class="text-body" th:text="${combo.mota}"></p>
                                     </div>
                                     <div class="card-footer">
-                                    <span class="text-title" th:text="${combo.giatien}"></span>
+                                    <span class="text-title" style="color: #d02028;" th:text="${combo.soTienDepHon()}"></span>
                                     <a class="card-button" th:href="@{/combo/{id}(id=${combo.macb})}">
                                     Chọn ngay
                                     </a> 

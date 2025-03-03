@@ -22,4 +22,7 @@ public interface DonDatBanRepository extends JpaRepository<DonDatBan,Long> {
            "GROUP BY YEAR(d.ngaydat), MONTH(d.ngaydat) " +
            "ORDER BY YEAR(d.ngaydat), MONTH(d.ngaydat)")
     List<Object[]> getMonthlyStatsForDoiTac(@Param("doiTacId") Long doiTacId);
+
+    @Query("SELECT COUNT(d) FROM DonDatBan d WHERE d.doiTac.id = :doiTacId")
+    int countByDoiTacId(@Param("doiTacId") Long doiTacId);
 }

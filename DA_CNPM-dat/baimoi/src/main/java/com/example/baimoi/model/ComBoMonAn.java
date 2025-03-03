@@ -116,7 +116,7 @@ public class ComBoMonAn {
     }
 
     public static String formatCurrency(double amount) {
-        DecimalFormat decimalFormat = new DecimalFormat("#,###.00");
+        DecimalFormat decimalFormat = new DecimalFormat("#,###");
         return decimalFormat.format(amount);
     }
 

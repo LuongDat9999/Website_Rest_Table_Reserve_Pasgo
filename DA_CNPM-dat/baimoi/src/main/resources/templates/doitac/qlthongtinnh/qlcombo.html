@@ -34,10 +34,10 @@
                                 
                                 <div class="fm-addthongtin">
                                     <label for="file">Ảnh mô tả</label>
-                                    <input type="file" class="form-control-file" id="file" name="file" required />
+                                    <input type="file" class="form-control-file" id="file" name="file" />
                                 </div>
                                 <div th:if="${comBoMonAn.img != null}">
-                                    <img th:src="@{'/uploads/' + ${comBoMonAn.img}}" alt="Current image" style="max-width: 200px;" />
+                                    <img th:src="@{'/uploads/' + ${comBoMonAn.img}}" style="max-width: 200px;"/>
                                 </div>
                                 <input type="hidden" name="madt" th:value="${doiTac.madt != null ? doiTac.madt : ''}" />
                                 <button type="submit" class="fm-btn-CSTT">Lưu</button>

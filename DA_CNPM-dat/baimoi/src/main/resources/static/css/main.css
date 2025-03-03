@@ -1,5 +1,6 @@
 body {
     padding:0;
+    color:black;
 }
 .fixcontent{
   margin-top: 100px;
@@ -21,6 +22,10 @@ body {
   display: flex;
   justify-content: center;
   background-color: #fff; /* Màu nền của container */
+  padding: 30px 0 10px 0;
+
+
+              
 }
 
 .menu {
@@ -38,12 +43,14 @@ body {
   width: 80px;
   height: 80px;
   border-radius: 50%;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Đổ bóng cho hình ảnh */
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.6);
 }
 
 .menu-item p {
   margin-top: 10px;
+  font-size: 16px;
   font-weight: bold;
+  color: black;
 }
 /* header */
 
@@ -51,7 +58,7 @@ body {
   display: flex;
   justify-content: center;
   width: 100%;
-  background-color: red;
+  background-color: #d02028;
   position: fixed;
   top: 0;
   z-index: 1000;
@@ -208,30 +215,34 @@ body {
 }
 /* -------------------- */
 /* SearchBox */
-.search-box {
+.fm-search{
   margin-top: 10px;
-  width: 50%;
-  border: 1px solid red;
-  border-radius: 10px;
+  width: 60%;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   max-width: 1000px;
   margin-left: auto;
   margin-right: auto;
+  
+}
+.search-box {
+  border: 2px solid #d02028;
+  border-radius: 10px;
+  display: flex;
+  justify-content: space-between;
+  background-color: white;
+  align-items: center;
+  z-index: 99;
+  width: 100%;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
 }
 .search-box input{
   height: 38px;
   width: 85%;
   border: none;
   padding-left: 10px;
+  font-size: 18px;
   
-}
-.search-btn{
-  float: right;
-  width: 15%;
-  height: 38px;
-  line-height: 38px;
-  text-align: center;
 }
 .search-box input:focus, .search-box input:active, .search-box input{
   outline: 0;
@@ -240,63 +251,168 @@ body {
   border-radius: 10px 0px 0px 10px;
 }
 
+.btn-search {
+  position: relative;
+  font-family: inherit;
+  font-weight: 400;
+  font-size: 16px;
+  padding-left: 20px;
+  border-radius: 0 8px 8px 0;
+  cursor: pointer;
+  border: none;
+  color: ghostwhite;
+  overflow: hidden;
+  background-color: #d02028;
+  transition: all 0.2s;
+}
+
+.btn-search span {
+  position: relative;
+  z-index: 10;
+  transition: color 0.4s;
+  display: inline-flex;
+  align-items: center;
+  padding: 10px;
+}
+.btn-search:hover {
+  background-color: #b32126 ;
+} 
+
+.btn-search:active {
+  background-color: #f73a40;
+}
+
+#myMenu {
+  display: none;
+}
+#myMenu.show {
+  display: block;
+}
+
+.fm-propose{
+  display: none;
+  background-color: white;
+  border-radius: 0 0 10px 10px;
+  position: absolute;
+  top: 160px;
+  z-index: 99;
+  margin-left: 5px;
+  width: 50%;
+}
+
+.brg-propose-box {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  background-color: rgba(0, 0, 0, 0.5);
+}
+.ite-propose{
+  margin-left: 20px;
+  margin-top: 10px;
+  font-size: 18px;
+}
+.res-outstanding{
+  margin-bottom: 30px;
+}
+.res-outstanding h3{
+  background-image: linear-gradient(90deg, rgba(255, 104, 104, 0.73) 50%, rgba(255, 255, 255, 0.68) 100%);
+  width: 90%;
+  padding: 10px;
+  border-radius: 10px;
+  color: black;
+} 
+
+.ite-propose ul{
+  width: 80%;
+  color: #555;
+}
+.ite-propose li{
+  padding: 10px;
+  list-style-type:none;
+  transition: all 0.2s;
+  border-radius: 10px;
+  cursor: pointer;
+}
+.ite-propose li:hover{
+  background-color: #dfdfdf;
+}
+
+.item-res-outstand{
+  display: flex;
+  flex-direction: row;
+  width: 90%;
+  justify-items: start;
+  padding: 10px;
+}
+.item-res-outstand img{
+  width: 150px;
+  height: 90px;
+  border-radius: 10px;
+}
+.item-res-outstand:hover{
+  background-color: #dfdfdf;
+  transition: all 0.2s;
+  border-radius: 10px;
+  text-decoration: none;
+}
+.fm-content-res{
+  display: flex;
+  flex-direction: column;
+  margin-left: 10px;
+  color: black;
+}
 
 /* Menu Filter (Bộ lọc)*/
-
+.fm-filter{
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 #filterForm {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
+  width: 70%;
   gap: 10px;
-  justify-content: center;
+  justify-self: center;
+  justify-content: space-around;
   margin: 30px 10px;
 }
 
 #filterForm label {
   font-size: 16px;
   color: #555;
+  margin-right: 10px;
 }
 
-#filterForm select, #filterForm input[type="number"] {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  font-size: 16px;
-  box-sizing: border-box;
-}
-
-#filterForm select:focus, #filterForm input[type="number"]:focus {
-  border-color: #007bff;
-  outline: none;
-}
-
-#filterForm button {
+.cus-select{
+  appearance: none;
+  background-color: white;
+  border-radius: 10px;
   padding: 10px 20px;
   font-size: 16px;
-  color: #fff;
-  background-color: #28a745;
-  border: none;
-  border-radius: 4px;
+  color: black;
+  border: 2px solid rgb(158, 156, 156);
   cursor: pointer;
   transition: background-color 0.3s ease;
+  box-shadow: 0 10px 10px rgba(0, 0, 0, 0.1);
+}
+.cus-select:hover{
+  color: rgb(84, 84, 84);
+  border: 2px solid rgb(183, 183, 183);
+
 }
 
-#filterForm button:hover {
-  background-color: #218838;
+.scroll-list{
+  overflow-x: unset;
+  overflow-y: hidden;
+  white-space: nowrap;
+  scroll-snap-type: x mandatory;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 .container {
     display: inline-block;
     cursor: pointer;
@@ -331,7 +447,7 @@ body {
 /* Man Hinh 1 */
 
 .pagebox{
-  
+  border-radius: 10px;
   display: flex;
   width: 100%;
   height: auto;
@@ -355,26 +471,26 @@ body {
   display: flex;
   flex-direction: column;
   width: 250px;
-  height: 350px;
   margin: 20px ;
   background-color: white;
   justify-content: space-between;
   align-items: center;
   border-radius: 10px;
   padding-bottom: 20px;
-  margin-right: 20px;
+  margin-right: 10px;
 }
 .box2{
   width: 100%;
   height: 180px;
   border-radius: 10px;
+  border: none;
 }
+
 .fix-img{
   width: 100%;
   height: 100%;
   object-fit:cover; 
   border-radius: 8px;
-  border:1px solid #555;
 }    
 .tieuDe-nhaHang{
   width: 100%;
@@ -383,6 +499,7 @@ body {
   margin: 5px;
   text-decoration: none;
   height: 50px;
+  color: black;
 }
 .box1 a:hover{
   transition: 0.2s;
@@ -397,17 +514,17 @@ body {
   margin: 3px 2px;
   height: 70px;
 }
-.fm-btn{
-background-color: grey;
-color: red;
+.fm-btn {
+color: black;
+background-color: white;
 font-weight: 500;
-border: 1px solid black;
-border-radius: 5px;
-color: white; 
+border: 2px solid red;
+border-radius: 10px;
 text-decoration: none;
-
+font-size: 16px;
 cursor: pointer;
-height: 30px;
+text-wrap: nowrap;
+padding: 10px;
 }
 .fm-btn:hover{
 background-color: #f63333;
@@ -415,6 +532,19 @@ color: white;
 transition: 0.3s;
 justify-self: start;
 text-decoration: none;
+}
+
+.div-card {
+  cursor: pointer;
+  transition: all 0.5s;
+}
+.div-card:hover {
+    transform: scale(1.05, 1.05);
+}
+
+.cards:hover > .div-card:not(:hover) {
+  
+  transform: scale(0.95, 0.95);
 }
 
 /* Man Hinh ADMIN */
@@ -566,7 +696,3 @@ text-decoration: none;
   color: red;
 }
 
-.fm-search{
-  width: 50px;
-  background-color: white;
-}

@@ -20,9 +20,8 @@ body {
 }
 
 .container {
-    
     min-height: 10vh;
-    background-color: rgb(227, 226, 226);
+    background-color: white;
     display: flex;
 
 }
@@ -31,15 +30,14 @@ body {
     display: flex;
     align-items: flex-start;
     flex-wrap: nowrap; /* Allow content to wrap on smaller screens */
-    margin: 30px 100px ;    
-
+    margin: 30px ;    
+    justify-content: space-around;
 }
 
 .slider-wrapper {
     position: relative;
-    max-width: 50rem;
-    margin-right: 2rem; /* Space between slider and nav images */
-    flex: 1 1 100%; /* Make the slider responsive */
+    max-width: 60rem;
+    flex: 1 1 100%;
 }
 
 .slider {
@@ -131,18 +129,10 @@ body {
     flex: 1;
 }
 
-.item-left {
-    margin-right: 1rem; /* Space between item-left and item-right */
-}
-
-.item-right {
-    margin-left: 1rem; /* Space between item-left and item-right */
-}
-
 .detail-box {
     position: relative;
     margin-bottom: 10px;
-    padding: 20px; /* Increased top padding to accommodate the button */
+    padding: 20px;
     box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.1);
     
 }
@@ -189,10 +179,7 @@ body {
 }
 
 
-
-
-.menu-content {
-    box-shadow: 0 1.5rem 3rem rgba(0, 0, 0, 0.1);
+.menu-content {    
     display: block;
     justify-content: center;
 }
@@ -200,13 +187,18 @@ body {
 .menu-content h2 {
     font-size: 2rem;
     color: #333;
-    margin: 1rem;
+    margin: 30px;
 }
 
 .menu-content p {
-    font-size: 1.5rem;
-    color: #666;
+    font-size: 1.3rem;
     margin:  1.5rem;
+}
+
+.menu-content section{
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    margin: 10px ;
+    padding: 10px 0;
 }
 
 @media (max-width: 768px) {
@@ -214,7 +206,7 @@ body {
         flex-direction: column;
     }
     
-    .item-left, .item-right {
+    .item-left {
         margin: 0 0 1rem;
     }
 
@@ -257,45 +249,25 @@ body {
 
 .card-scroll {
     display: flex;
+    width: auto;
     overflow-x: auto;
     gap: 20px;
-    
-}
-.card-scroll a {
-    text-decoration: none;
-}
-
-.card-scroll::-webkit-scrollbar {
-    height: 6px;
-}
-
-.card-scroll::-webkit-scrollbar-track {
-    background: transparent;
-}
-
-.card-scroll::-webkit-scrollbar-thumb {
-    background-color: #888;
-    border-radius: 3px;
-    border: 4px solid transparent;
-    background-clip: content-box;
-}
-
-.card-scroll::-webkit-scrollbar-thumb:hover {
-    background-color: #555;
 }
 
 .card {
-    flex: 0 0 auto; /* Đảm bảo các thẻ không co giãn và nằm kế bên nhau */
-    width: 400px; /* Đặt chiều rộng cố định cho mỗi thẻ */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 350px; 
     height: auto;
     background-color: #fff;
-    border: 1px solid #ddd;
-    border-radius: .5rem;
+    border: 1.5px solid #ddd;
+    border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
     transition: transform .3s ease, box-shadow .3s ease;
     padding: 10px;
     margin: 10px 0;
-  
+    margin-left: 10px;
 }
 
 .card-img img {
@@ -305,9 +277,6 @@ body {
     transition: .3s ease;
 }
 
-.card-info {
-    padding: 20px; /* Để tăng khoảng cách giữa nội dung và các phần tử khác */
-}
 
 .card-footer {
     display: flex;
@@ -321,11 +290,13 @@ body {
     font-weight: 900;
     font-size: 1.2em;
     line-height: 1.5;
+    color: black;
 }
 
 .text-body {
     font-size: .9em;
     padding-bottom: 10px;
+    color: #888;
 }
 
 .card-button {
@@ -424,10 +395,10 @@ a{
     box-shadow: 0 0 5px 3px rgb(241, 149, 149);
     position: relative;
     display: block;
-    margin: 0;
+    margin-right: 10px;
     width: 3rem;
     height: 3rem;
-    background: red;
+    background: #d02028;
     border-radius: 1.625rem;
   }
   
@@ -467,8 +438,8 @@ a{
     left: 0;
     right: 0;
     bottom: 0;
-    padding: 0.75rem 0;
-    margin: 0 0 0 1.85rem;
+    padding: 0.70rem 0;
+    margin: 0 0 0 2.5rem;
     color: black;
     font-weight: bold;
     line-height: 1.6;

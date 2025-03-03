@@ -84,4 +84,7 @@ public class DonDatBanService {
             "totalRevenue", row[3]
         )).collect(Collectors.toList());
     }
+    public int countByDoiTacId(Long doiTacId) {
+        return donDatBanRepository.countByDoiTacId(doiTacId);
+    }
 }

@@ -44,7 +44,7 @@
                 <div th:if="${session.loggedInUser}">
                     <div class="account-menu">
                         <a th:href="@{/info}">
-                            <button class="btnac" th:text="${'Xin chào, ' + session.loggedInUser.hoten}"></button>
+                            <button class="btnac" th:text="${session.loggedInUser.hoten}"></button>
                         </a>
                     </div>
                 </div>

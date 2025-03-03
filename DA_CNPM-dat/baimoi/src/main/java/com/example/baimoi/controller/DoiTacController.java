@@ -536,10 +536,20 @@ public String getViewDangKyDoiTac(){
         Long doiTacId = Long.valueOf(doiTacIdStr.trim());
         Optional<DoiTac> doiTacOpt = doiTacService.getDoiTacById(doiTacId);
         DoiTac doiTac = doiTacOpt.get();
-
+                             
         comBoMonAn.setDoiTac(doiTac);
-        this.storageService.store(file);
-        comBoMonAn.setImg(file.getOriginalFilename());
+                                
+        if (!file.isEmpty()) {            
+            this.storageService.store(file);
+            comBoMonAn.setImg(file.getOriginalFilename());
+        }else {
+            Optional<ComBoMonAn> existingCombo = comBoMonAnService.getComboMonAnById(comBoMonAn.getMacb());
+            ComBoMonAn comBoMonAnOld = existingCombo.get();
+            if (existingCombo != null) {
+                comBoMonAn.setImg(comBoMonAnOld.getImg());
+            }
+        }
+
         comBoMonAnService.saveComboMonAn(comBoMonAn);
         return "redirect:/doitac/qlcombo/" + doiTac.getMadt();
     }

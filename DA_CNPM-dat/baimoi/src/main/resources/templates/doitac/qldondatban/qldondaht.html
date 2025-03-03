@@ -11,14 +11,6 @@
                 <div class="box-bg1">  
                     <h1>ĐÃ HOÀN THÀNH</h1>
                     <div class="box-bg2">
-                        
-                        <from class="box-search" th:action="/doitac/search" method="get">
-                            <button type="submit">
-                                <img class="fm-icSearch" th:src="@{/images/icsearch.png}"/>
-                            </button>
-                            <input class="input-search" type="text" name="query" placeholder="Search" type="search" >
-                        </from>
-
                         <div class="fm-table-QLDH">
                             <table>
                             <tr>
@@ -35,7 +27,7 @@
                             </tr>
                             <tr th:if="${donDatBan.trangThaiDon.mattd == 3}" th:each="donDatBan : ${donDatBans}">
                                 <td th:text="${donDatBan.maddb}"></td>
-                                <td th:text="${donDatBan.nguoiDung.hoten}"></td>
+                                <td th:text="${donDatBan.nguoiDung.sdt}"></td>
                                 <td th:text="${#dates.format(donDatBan.ngaydat, 'dd/MM/yyyy')}"></td>
                                 <td th:text="${#dates.format(donDatBan.thoigiandat, 'HH:mm')}"></td>
                                 <td th:text="${donDatBan.solgnguoi}"></td>
