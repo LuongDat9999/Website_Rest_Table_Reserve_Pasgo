@@ -65,9 +65,6 @@ java -jar target/baimoi-0.0.1-SNAPSHOT.jar
 ### Báo cáo chi tiết (PDF)
 - Tài liệu thuyết minh, luồng hệ thống, thiết kế CSDL, và hướng dẫn sử dụng ở: **[Report_Detail.pdf](Report_Detail.pdf)**
 
-### Giấy phép
-Mã nguồn thuộc quyền tác giả của nhóm phát triển dự án Pasgo. Vui lòng tham khảo điều khoản sử dụng nội bộ của bạn.
-
 ### Đóng góp
 - Lương Tiến Đạt ([LuongDat9999](https://github.com/LuongDat9999)) (Leader): thiết kế cơ sở dữ liệu, phát triển chức năng Đối tác nhà hàng, và một phần chức năng Người dùng
 - Lê Văn Anh ([anh-le-24](https://github.com/anh-le-24)): phát triển chức năng Admin và một phần chức năng Người dùng
