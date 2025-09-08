@@ -68,4 +68,11 @@ java -jar target/baimoi-0.0.1-SNAPSHOT.jar
 ### Giấy phép
 Mã nguồn thuộc quyền tác giả của nhóm phát triển dự án Pasgo. Vui lòng tham khảo điều khoản sử dụng nội bộ của bạn.
 
+### Đóng góp
+- Bạn (Leader): thiết kế cơ sở dữ liệu, phát triển chức năng Đối tác nhà hàng, và một phần chức năng Người dùng
+- Lê Văn Anh ([anh-le-24](https://github.com/anh-le-24)): phát triển chức năng Admin và một phần chức năng Người dùng
+- Nguyễn Huỳnh Phú Quý ([phqyyy23](https://github.com/phqyyy23)): phân tích, thiết kế và xây dựng giao diện
+- Nguyễn Thị Thuỳ Dương: phân tích, thiết kế và xây dựng giao diện
+- Lê Văn Thiện: phân tích, thiết kế và xây dựng giao diện
+
 
