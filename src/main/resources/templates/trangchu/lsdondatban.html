@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lịch sử đặt bàn</title>
+    <link th:href="@{/css/lsdatban.css}" rel="stylesheet" />
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <link th:href="@{/css/thongbao.css}" rel="stylesheet" />
+    <link rel="stylesheet" th:href="@{/css/DoiTacCss.css}">
+    <script th:src="@{/js/nav.js}"></script>
+    <link rel="icon" th:href="@{/images/iconweb.png}" type="image/x-icon">
+
+</head>
+<body>
+    <header th:replace="~{/fragments/top :: top}"></header>
+
+    <div class="div-ThongBao" id="myFormHuyKH">
+        <div style="display: flex;justify-content: center;align-items: center;width: 100%;height: 100%;">
+            <div class="form-XN">
+                <div class="header-foXN">
+                    <div class="content-foXN">
+                        <span class="title-foXN">Xác nhận hủy đặt bàn</span>
+                        <p class="message-foXN">Hãy cho chúng tôi biết lý do bạn hủy.</p>
+                        <input type="text" id="lyDoHuyKHInputKH" placeholder="Lý do hủy" class="input-lyDoHuy" name="lyDoHuy">
+                    </div>
+                    <div class="actions">
+                        <form th:action="@{/huy}" method="post" onsubmit="return setLyDoHuyKH()">
+                            <input type="hidden" name="maddb" id="huyMaddbKH" />
+                            <input type="hidden" name="lyDo" id="lyDoHuyHiddenKH" />
+                            <button class="desactivate-foXN" type="submit">Xác nhận hủy</button>
+                            <button class="cancel-foXN" type="button" onclick="closeFormHuyKH()">Hủy</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="container-lsdatban"> 
+        <div class="fm-divlsdatban">
+            <h1 style="text-align: center;">LỊCH SỬ ĐẶT BÀN</h1>
+            <div class="fm-table-QLDH">
+                <table id="donDatBanTable">
+                    <thead>
+                        <tr>
+                            <th>STT</th>
+                            <th>Tên nhà hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Giờ đến</th>
+                            <th>Số lượng</th>
+                            <th>Tên Combo</th>
+                            <th>Tên Chi Nhánh</th>
+                            <th>Yêu cầu đặc biệt</th>
+                            <th>Ghi chú</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr th:each="donDatBan : ${donDatBans}">
+                            <td></td>
+                            <td th:text="${donDatBan.doiTac.tennhahang}"></td>
+                            <td th:text="${#dates.format(donDatBan.ngaydat, 'dd/MM/yyyy')}"></td>
+                            <td th:text="${#dates.format(donDatBan.thoigiandat, 'HH:mm')}"></td>
+                            <td th:text="${donDatBan.solgnguoi}"></td>
+                            <td th:text="${donDatBan.comBoMonAn != null ? donDatBan.comBoMonAn.tencb : 'Null'}"></td>
+                            <td th:text="${donDatBan.chiNhanh != null ? donDatBan.chiNhanh.tencn : 'Null'}"></td>
+                            <td th:text="${donDatBan.yeucaudacbiet}"></td>
+                            <td th:text="${donDatBan.ghichu}"></td>
+                            <td>
+                                <button th:onclick="'openFormHuyKH(' + ${donDatBan.maddb} + ')'" th:if="${donDatBan.trangThaiDon.mattd == 1}"
+                                    style="background-color: red;"  class="btnXN" type="button">Hủy</button>
+                                <button th:if="${donDatBan.trangThaiDon.mattd != 1 && donDatBan.trangThaiDon.mattd != 3 || donDatBan.madg != null}"  class="btnXN" th:text="${donDatBan.trangThaiDon.noidung}" style="cursor: not-allowed;" disabled></button>
+                                <a th:if="${donDatBan.trangThaiDon.mattd == 3 && donDatBan.madg == null}" th:href = "@{/danhgia/{id}(id = ${donDatBan.maddb})}">
+                                    <button type="submit" class="btnXN" style="color: black ;background-color: #f0e51b;">Đánh giá</button>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script>
+        // Hủy đơn của Khách hàng
+        function openFormHuyKH(maddb) {
+        document.getElementById("huyMaddbKH").value = maddb;
+        document.getElementById("myFormHuyKH").style.display = "block";
+        }
+
+        function closeFormHuyKH() {
+            document.getElementById("myFormHuyKH").style.display = "none";
+        }
+
+        function setLyDoHuyKH() {
+            var lyDo = document.getElementById("lyDoHuyInputKH").value;
+            if (lyDo.trim() === "") {
+                alert("Vui lòng nhập lý do hủy");
+                return false;
+            } else {
+                document.getElementById("lyDoHuyHiddenKH").value = lyDo;
+                return true;
+            }
+        }
+
+
+        document.addEventListener("DOMContentLoaded", function() {
+            var table = document.getElementById("donDatBanTable");
+            var tbody = table.querySelector("tbody");
+            var rows = tbody.querySelectorAll("tr");
+            
+            rows.forEach(function(row, index) {
+                var sttCell = row.querySelector("td");
+                sttCell.textContent = index + 1;
+            });
+        });
+    </script>
+</body>
+</html>

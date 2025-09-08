@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale= 1.0" />
+        <title>Đặt bàn Boss </title>
+        <link th:href="@{/css/main.css}" rel="stylesheet" />
+        <link th:href="@{/css/thongbao.css}" rel="stylesheet" />
+        <script th:src="@{/js/nav.js}"></script>
+        <script th:src="@{https://example.com/fontawesome/vVERSION/js/all.js}"></script>
+        <link rel="icon" th:href="@{/images/iconweb.png}" type="image/x-icon">
+        <link rel="stylesheet" th:href="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css}"/>
+        <script th:src="@{https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js}"></script>
+        <script th:src="@{https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js}"></script>
+        <script th:src="@{/js/script.js}" defer></script>
+        <script th:src="@{/js/thongbao.js}" defer></script>
+        
+    </head>
+
+    <body>
+        <!--NAV BAR-->
+        <header th:replace="~{/fragments/top :: top}"></header>
+
+        <!-- BODY Content  -->
+        <div class="fixcontent">
+            <div class="content" >
+                <form class="fm-search" action="/search" method="get" id="search-form" onsubmit="saveKeyword();">
+                    <div class="search-box">
+                        <input type="text" name="query" id="query-input" placeholder="Nhập tên nhà hàng hoặc địa chỉ" onclick="openPropose()" oninput="wordSuggess()">
+                        <button class="btn-search" type="submit">
+                            <span>Tìm kiếm</span>
+                        </button>
+                    </div>
+                
+                    <div id="propose-box" class="fm-propose">
+                        <div class="ite-propose keyword_searched">
+                            <h3>Gợi ý</h3>
+                            <ul id="myMenu">
+                                <li th:each="doiTac : ${topDoiTacs}">
+                                    <a style="color: #555; text-decoration: none;" th:text="${doiTac.tennhahang}" th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}"></a>
+                                </li>
+                            </ul>
+                        </div>                        
+
+                        <div class="ite-propose keyword_searched">
+                            <h3>
+                            <img src="/images/ictime.png" style="width: 24px; height: 24px; vertical-align: middle; margin-right: 5px;">
+                            Từ khóa gần đây
+                            </h3>
+                            <ul id="recent-keywords-list">
+                            <!-- Các từ khóa sẽ được hiển thị ở đây -->
+                            </ul>
+                        </div>
+                        
+                        <div class="ite-propose res-outstanding">
+                            <h3>
+                                <img src="/images/fire.png" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 5px;">
+                                Nhà hàng nổi trội
+                            </h3>
+                            <div class="list-res-outstand">
+                                <div th:each="doiTac : ${topDoiTacs}">
+                                    <a class="item-res-outstand" th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
+                                        <img th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}" />
+                                        <div class="fm-content-res">
+                                            <h4 th:text="${doiTac.tennhahang}"></h4>
+                                            <p th:text="${doiTac.getFullAddress()}"></p>
+                                        </div>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>                        
+                        
+                    </div>
+                    <div id="brg-propose-box" class="brg-propose-box" onclick="closePropose()"></div>
+                </form>                                    
+                <!-- Form lọc -->
+                <div class="fm-filter">
+                    <form id="filterForm" method="get" action="/loc">
+                        <div>
+                            <label for="thanhpho">Thành phố:</label>
+                            <select class="cus-select" id="thanhpho" name="thanhpho" style="margin-right: 10px;">
+                                <option value="">Chọn thành phố</option>
+                                <option value="TP. Hà Nội">Hà Nội</option>
+                                <option value="TP. Hồ Chí Minh">Hồ Chí Minh</option>
+                                <option value="TP. Đà Nẵng">Đà Nẵng</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="hoadon">Hóa đơn trung bình:</label>
+                            <select class="cus-select" id="hoadon" name="hoadon" style="margin-right: 10px;">
+                                <option value="">Chọn hóa đơn trung bình</option>
+                                <option value="100K - 200K">100K - 200K</option>
+                                <option value="200K - 300K">200K - 300K</option>
+                                <option value="300K - 400K">300K - 400K</option>
+                                <option value="400K - 500K">400K - 500K</option>
+                                <option value="500K - 600K">500K - 600K</option>
+                            </select>
+                        </div>
+                        <button class="cus-select" type="submit">
+                            <img src="/images/icfilter.png" style="width: 30px; height: 30px; vertical-align: middle; margin-right: 5px;">
+                            Lọc
+                        </button>
+                    </form>
+                </div>
+
+                <!---------  Loại Nhà Hàng  --------->
+                <div class="menu-container scroll-list" >
+                    <div class="menu" th:each="loainhahang : ${loainhahangs}" th:if="${loainhahang != null}">
+                        <a th:href="@{/loc-theo-loai/{malnh}(malnh=${loainhahang.malnh})}">
+                            <div  class="menu-item">
+                                <img th:src="@{/uploads/{imgmota}(imgmota=${loainhahang.imgmota})}" alt="Mô tả ảnh">
+                                <p th:text="${loainhahang.tenlnh}"></p>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!--CHOICE-->
+
+                <!--Box1-->
+            <!-- Kiểm tra điều kiện và hiển thị tiêu đề nếu thỏa mãn -->
+                <div >
+                    <div >
+                        <h2>Buffet hải sản</h2>
+                        <p>Menu cực nhiều món ngon từ tôm, cua, ốc, ghẹ,... với nhiều mức giá. Một số Nhà hàng còn có tôm hùm, cua biển. Từ bình dân đến sang chảnh.</p>
+                    </div>
+                </div>
+                
+                <div class="pagebox cards">
+                    <!-- Lặp qua danh sách doiTacs để hiển thị từng đối tác thỏa mãn điều kiện -->
+                    <div class="div-card" th:each="doiTac : ${doiTacs}">
+                        <div th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 1 && doiTac.mabv != null}">
+                            <div class="box1">
+                                <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
+                                    <div class="box2">
+                                        <img class="fix-img" th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}"/>
+                                    </div>
+                                    <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
+                                    <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
+                                    <div style="width: 100%;display: flex; justify-content: center;">
+                                        <button type="button" class="fm-btn">Đặt bàn</button>
+                                    </div>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Box2  -->
+                <div >
+                    <div >
+                        <h2>Nhà Hàng da đạng giá. Ưu đãi bất ngờ!</h2>
+                        <p>Buffet chay, Buffet trưa, Buffet hải sản, buffet nướng, buffet lẩu,... cho ăn gia đình, liên hoan văn phòng, tiếp khách,....</p>
+                    </div>
+                </div>
+                
+                <div class="pagebox cards">
+                    <div class="box1 div-card" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 2 && doiTac.mabv != null }" >
+                        <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
+                            <div class="box2">
+                                <img class="fix-img" th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}"/>
+                            </div>
+                            <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
+                            <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
+                            <div style="width: 100%;display: flex; justify-content: center;">
+                                <button type="button" class="fm-btn">Đặt bàn</button>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+
+                <!--Box3-->
+                <div >
+                    <div>
+                        <h2>Nhà Hàng cho tụ họp, liên hoan, tiếp khách</h2>
+                        <p>Gồm cả các nhà hàng hải sản, quán chay, món Nhật, món Thái, món Trung... Phục vụ buffet hoặc gọi món. Nhiều mức giá.</p>
+                    </div> 
+                </div>
+                
+                <div class="pagebox cards">
+                    <div class="box1 div-card" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 3 && doiTac.mabv != null }" >
+                        <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
+                            <div class="box2">
+                                <img class="fix-img" th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}"/>
+                            </div>
+                            <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
+                            <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
+                            <div style="width: 100%;display: flex; justify-content: center;">
+                                <button type="button" class="fm-btn">Đặt bàn</button>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+                <!--Box4-->
+                <div>
+                    <div >
+                        <h2>Top QUÁN NHẬU vừa ngon vừa chill. CỰC ĐÃ!</h2>
+                        <p>Món nhậu ngon, đồ uống chất, bình dân tới cao cấp, cực chill. Nhiều góc view đẹp. Có cả rooftop. Mở cửa từ sáng đến khuya!</p>
+                    </div>
+                </div>
+                
+                <div class="pagebox cards">
+                    <div class="box1 div-card" th:each="doiTac : ${doiTacs}" th:if="${doiTac.nguoiDung.mapq == 3 && doiTac.madv == 4 && doiTac.mabv != null }" >
+                        <a th:href="@{/ctnhahang/{id} (id = ${doiTac.madt})}">
+                            <div class="box2">
+                                <img class="fix-img" th:src="@{/uploads/{imgmota}(imgmota=${doiTac.imgmota})}"/>
+                            </div>
+                            
+                            <h4 style="font-size: large;" class="tieuDe-nhaHang" th:text="${doiTac.tennhahang}"></h4>
+                            <p class="diaChi-nhaHang" th:text="${doiTac.getFullAddress()}"></p>
+                            <div style="width: 100%;display: flex; justify-content: center;">
+                                <button type="button" class="fm-btn">Đặt bàn</button>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- -----Tool Box ------- -->
+        <div style="margin: 0;" class="pagebox manhinh3">
+            <div class="footer">
+                <div class="div-main-ele">
+                    <h3>FOLLOW US</h3>
+                    <div class="div-follow"> 
+                        <div class="wrapper">
+                            <a class="facebook icon fm-link" th:href="@{https://www.facebook.com/pasgo.vn}" target="_blank">f</a>                        
+                            <a class="icon zalo fm-link" th:href="@{https://www.tiktok.com/@pasgovietnam}" target="_blank">Z</a>                       
+                            <a class="icon instagram fm-link" th:href="@{https://www.youtube.com/channel/UCZVrGI9UypsJxa-U_-DC2qg}" target="_blank">Ig</a>      
+                        </div>
+                    </div>
+                </div>   
+                <div class="div-main-ele"> 
+                    <div class="fmLogoDT"  th:if="nguoiDung.mapq != 3">
+                        <a th:href="${session.loggedInUser != null ? '/doitac/dangkydoitac' : '/doitac/login-required'}" target="_blank">ĐĂNG KÝ ĐỐI TÁC</a>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </body>
+</html>

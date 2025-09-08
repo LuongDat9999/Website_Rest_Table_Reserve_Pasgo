@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale= 1.0" />
+    <title>Chi Tiết</title>
+    <link rel="stylesheet" th:href="@{/css/chitiet.css}">
+    <link th:href="@{/css/main.css}" rel="stylesheet" />
+    <link th:href="@{/css/thongbao.css}" rel="stylesheet" />
+    <link rel="icon" th:href="@{/images/iconweb.png}" type="image/x-icon">
+
+    <script th:src="@{/js/nav.js}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const sliderImages = document.querySelectorAll('.slider img');
+            const navLinks = document.querySelectorAll('.slider-nav a');
+            const prevButton = document.querySelector('.slider-button.prev');
+            const nextButton = document.querySelector('.slider-button.next');
+            let currentIndex = 0;
+        
+            function showImage(index) {
+                sliderImages.forEach(img => img.classList.remove('active'));
+                sliderImages[index].classList.add('active');
+                currentIndex = index;
+            }
+        
+            navLinks.forEach((link, index) => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    showImage(index);
+                });
+            });
+        
+            prevButton.addEventListener('click', function() {
+                currentIndex = (currentIndex - 1 + sliderImages.length) % sliderImages.length;
+                showImage(currentIndex);
+            });
+        
+            nextButton.addEventListener('click', function() {
+                currentIndex = (currentIndex + 1) % sliderImages.length;
+                showImage(currentIndex);
+            });
+        
+            // Show the first image initially
+            showImage(0);
+        });
+        </script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                const button = document.querySelector('.fm-btndatban');
+                const menuDetail = document.querySelector('.menu-detail');
+                let menuDetailBottom = menuDetail.offsetTop + menuDetail.offsetHeight;
+                const initialButtonTop = window.innerHeight - button.offsetHeight - 30; // 20px from bottom
+            
+                function positionButton() {
+                    const scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
+                    
+                    if (scrollPosition > menuDetailBottom - window.innerHeight) {
+                        button.style.position = 'fixed';
+                        button.style.top = (menuDetail.offsetHeight + 60) + 'px';
+                    } else {
+                        button.style.position = 'fixed';
+                        button.style.top = initialButtonTop + 'px';
+                    }
+                }
+            
+                window.addEventListener('scroll', positionButton);
+                window.addEventListener('resize', function() {
+                    menuDetailBottom = menuDetail.offsetTop + menuDetail.offsetHeight;
+                    positionButton();
+                });
+            
+                // Initial positioning
+                positionButton();
+            });
+            </script>
+    
+</head>
+<body>
+    <header th:replace="~{/fragments/top :: top}">
+    </header>
+    <div class="fixcontent">
+        <div class="content">
+            <section class="container">
+                <div class="content-wrapper">
+                    <div class="slider-wrapper">
+                        <div class="slider">
+                            <th:block th:each="image, iterStat : ${images}">
+                                <img th:src="@{/uploads/{img}(img=${image.img})}" th:alt="'Slide ' + ${iterStat.index + 1}" th:id="'slider-' + ${iterStat.index + 1}" />
+                            </th:block>
+                        </div>
+                        <button class="slider-button prev" onclick="prevSlide()">&#10094;</button>
+                        <button class="slider-button next" onclick="nextSlide()">&#10095;</button>
+                    </div>
+                    <div class="slider-nav">
+                        <th:block th:each="image, iterStat : ${images}">
+                            <a th:href="'#slider-' + ${iterStat.index + 1}">
+                                <img th:src="@{/uploads/{img}(img=${image.img})}" th:alt="'Thumbnail ' + ${iterStat.index + 1}" />
+                            </a>
+                        </th:block>
+                    </div>
+                </div>
+            </section>
+            <div class="item-left">
+                <div class="detail-box" >
+                    <h2 th:text="${doiTac.tennhahang}"></h2>
+                    <div style="margin-left: 10px; color: #888">
+                        <p th:text="'Địa chỉ: ' + ${doiTac.getFullAddress()}" style="color: #d02028;"></p>
+                        <p><span>Loại nhà Hàng:</span>
+                            <ul>
+                                <li style="font-size: 20px;" class="category" th:each="loainhahang : ${doiTac.loaiNhaHangs}"  th:text="${loainhahang.tenlnh}"></li>
+                            </ul>
+                        </p>
+                        <p  th:text="'Khoảng giá: ' + ${doiTac.hoadontb} + ' / người'"><span>200.000 - 500.000 đ/người</span></p>
+                        <p style="color: rgb(14, 202, 86);" th:text="'Mở cửa: ' + ${doiTac.giomo}"></p>
+                        <p  style="color: red;" th:text="'Đóng cửa: ' + ${doiTac.giodong}"></p>
+                        <a th:href="${doiTac.linklienket}" th:text="'Liên kết: '+${doiTac.linklienket}" target="_blank"></a>
+                    </div>
+                    <div class="datban">
+                        <a class="fm-btndatban" th:if="${session.loggedInUser != null}" th:href="@{/datban/{id}(id=${doiTac.madt})}">Đặt Bàn</a>
+                        <a class="fm-btndatban" th:if="${session.loggedInUser == null}" th:href="@{/doitac/login-required}">Đặt Bàn</a>
+                    </div>
+                </div>
+                
+                <div class="menu-detail">
+                    <a href="#de-xuat" class="active">Đề xuất</a>
+                    <a href="#tom-tat">Tóm tắt</a>
+                    <a href="#bang-gia">Bảng giá</a>
+                    <a href="#quy-dinh">Quy định</a>
+                    <a href="#de-xe">Để xe</a>
+                    <a href="#tien-ich">Tiện ích</a>
+                    <a href="#chi-duong">Chỉ đường</a>
+                    <a href="#chi-tiet">Chi Tiết</a>
+                </div>
+                <div class="menu-content">
+                    <section id="de-xuat">
+                        <h2>Đề xuất</h2>
+                        <div class="card-scroll"> 
+                            <div class="card" th:each="combo : ${doiTac.comBoMonAns}">
+                                <a th:href="@{/combo/{id}(id=${combo.macb})}">
+                                    <div class="card-img">
+                                        <img th:src="@{/uploads/{imgmota}(imgmota=${combo.img})}" />
+                                    </div>
+                                    <div class="card-info">
+                                    <p class="text-title" th:text="${combo.tencb}"></p>
+                                    <p class="text-body" th:text="${combo.mota}"></p>
+                                    </div>
+                                    <div class="card-footer">
+                                    <span class="text-title" style="color: #d02028;" th:text="${combo.soTienDepHon()}"></span>
+                                    <a class="card-button" th:href="@{/combo/{id}(id=${combo.macb})}">
+                                    Chọn ngay
+                                    </a> 
+                                    </div>
+                                </a>
+                            </div>
+                        </div> 
+                    </section>
+                    <section id="tom-tat">
+                        <h2>Tóm tắt</h2>
+                        <div th:utext="${doiTac.baiVietDT.ndtomtat}"></div>
+                    </section>
+                    <section id="bang-gia">
+                        <h2>Bảng giá</h2>
+                        <div th:utext="${doiTac.baiVietDT.ndbanggia}"></div>
+                    </section>
+                    <section id="quy-dinh">
+                        <h2>Quy định</h2>
+                        <div th:utext="${doiTac.baiVietDT.ndquydinh}"></div>
+                    </section>
+                    <section id="de-xe">
+                        <h2>Để xe</h2>
+                        <div th:utext="${doiTac.baiVietDT.nddexe}"></div>
+                    </section>
+                    <section id="tien-ich">
+                        <h2>Tiện ích</h2>
+                        <div th:utext="${doiTac.baiVietDT.ndtienich}"></div>
+                    </section>
+                    <section id="chi-tiet">
+                        <h2>Chi tiết</h2>
+                        <div th:utext="${doiTac.baiVietDT.ndchitiet}"></div>
+                    </section>
+                    <section id="chi-duong" style="display: flex; justify-content: center; margin-top: 20px;">   
+                        <a class="learn-more" th:href="${doiTac.linkggmap}" target="_blank" style="font-size: 20px;">
+                            <span aria-hidden="true" class="circle">
+                            <span class="icon arrow"></span>
+                            </span>
+                            <span class="button-text">Chỉ đường</span>
+                          </a>
+                                       
+                    </section>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <script src="https://kit.fontawesome.com/a076d05399.js" crossorigin="anonymous"></script>
+</body>
+</html>
